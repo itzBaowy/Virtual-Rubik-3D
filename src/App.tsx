@@ -10,6 +10,7 @@ export default function App() {
   const [moveQueue, setMoveQueue] = useState<string[]>([]);
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [resetKey, setResetKey] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const getInverseMove = (move: string): string => {
     if (move.includes("2")) {
@@ -74,6 +75,52 @@ export default function App() {
       setIsAnimating(true);
     }
   }, [moveQueue, currentMove, isAnimating]);
+
+  // Track window resize
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Show mobile warning
+  if (windowWidth < 1368) {
+    return (
+      <div style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%)",
+        color: "white",
+        padding: "20px",
+        textAlign: "center"
+      }}>
+        <div style={{
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          borderRadius: "15px",
+          padding: "40px",
+          maxWidth: "500px",
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)"
+        }}>
+          <h1 style={{ fontSize: "48px", marginBottom: "20px" }}>🖥️</h1>
+          <h2 style={{ marginBottom: "15px", fontSize: "24px" }}>Desktop Only</h2>
+          <p style={{ fontSize: "16px", lineHeight: "1.6", marginBottom: "20px" }}>
+            Virtual Rubik 3D requires a minimum screen width of <strong>1368px</strong> for the best experience.
+          </p>
+          <p style={{ fontSize: "14px", color: "#cbd5e1" }}>
+            Current width: <strong>{windowWidth}px</strong>
+          </p>
+          <p style={{ fontSize: "14px", color: "#cbd5e1", marginTop: "10px" }}>
+            Please open this app on a desktop or laptop computer.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ height: "100vh", width: "100vw", position: "relative" }}>
