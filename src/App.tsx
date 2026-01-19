@@ -11,7 +11,12 @@ export default function App() {
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [resetKey, setResetKey] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  
+  // Race mode states
+  const [raceMode, setRaceMode] = useState<'idle' | 'showing' | 'ready' | 'racing' | 'finished'>('idle');
+  const [raceSequence, setRaceSequence] = useState<string[]>([]);
+  const [raceResult, setRaceResult] = useState<'win' | 'lose' | null>(null);
+  
   const getInverseMove = (move: string): string => {
     if (move.includes("2")) {
       return move; // double moves are their own inverse
@@ -56,6 +61,36 @@ export default function App() {
     setIsAnimating(false);
     // Force remount entire Canvas to reset everything
     setResetKey(prev => prev + 1);
+    setRaceMode('idle');
+    setRaceSequence([]);
+    setRaceResult(null);
+  };
+
+  const handleStartRace = (length: number) => {
+    // Reset first
+    setMoveQueue([]);
+    setMoveHistory([]);
+    setCurrentMove(null);
+    setIsAnimating(false);
+    setResetKey(prev => prev + 1);
+    
+    // Generate random sequence
+    const basicMoves = ['R', 'L', 'U', 'D', 'F', 'B'];
+    const modifiers = ['', "'", '2'];
+    const moves = basicMoves.flatMap(m => modifiers.map(mod => m + mod));
+    
+    const sequence = Array.from({ length }, () => 
+      moves[Math.floor(Math.random() * moves.length)]
+    );
+    
+    setRaceSequence(sequence);
+    setRaceMode('showing');
+    setRaceResult(null);
+    
+    // Execute sequence after a small delay to ensure reset is complete
+    setTimeout(() => {
+      sequence.forEach(move => handleMove(move));
+    }, 100);
   };
 
   const handleMoveComplete = () => {
@@ -82,6 +117,100 @@ export default function App() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Race mode: Check when sequence animation completes
+  useEffect(() => {
+    if (raceMode === 'showing' && moveQueue.length === 0 && !currentMove && !isAnimating) {
+      setRaceMode('ready');
+    }
+  }, [raceMode, moveQueue.length, currentMove, isAnimating]);
+
+  // Race mode: Space key handler
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        if (raceMode === 'ready') {
+          // Start race
+          e.preventDefault();
+          setRaceMode('racing');
+          handleResolve(); // Start resolving
+        } else if (raceMode === 'racing') {
+          // User pressed space during race
+          e.preventDefault();
+          if (moveQueue.length > 0 || currentMove || isAnimating) {
+            // User won - cube hasn't finished
+            setRaceResult('win');
+            setRaceMode('finished');
+            // Clear queue and stop animation
+            setMoveQueue([]);
+            setCurrentMove(null);
+            setIsAnimating(false);
+          }
+        }
+      }
+    };
+
+    if (raceMode === 'ready' || raceMode === 'racing') {
+      window.addEventListener('keydown', handleKeyPress);
+      return () => window.removeEventListener('keydown', handleKeyPress);
+    }
+  }, [raceMode, moveQueue.length, currentMove, isAnimating]);
+
+  // Race mode: Check if cube finished first
+  useEffect(() => {
+    if (raceMode === 'racing' && moveQueue.length === 0 && !currentMove && !isAnimating && moveHistory.length === 0) {
+      // Cube finished resolving
+      setRaceResult('lose');
+      setRaceMode('finished');
+    }
+  }, [raceMode, moveQueue.length, currentMove, isAnimating, moveHistory.length]);
+
+  // Race mode: Check when sequence animation completes
+  useEffect(() => {
+    if (raceMode === 'showing' && moveQueue.length === 0 && !currentMove && !isAnimating) {
+      setRaceMode('ready');
+    }
+  }, [raceMode, moveQueue.length, currentMove, isAnimating]);
+
+  // Race mode: Space key handler
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        if (raceMode === 'ready') {
+          // Start race
+          e.preventDefault();
+          setRaceMode('racing');
+          handleResolve(); // Start resolving
+        } else if (raceMode === 'racing') {
+          // User pressed space during race
+          e.preventDefault();
+          if (moveQueue.length > 0 || currentMove || isAnimating) {
+            // User won - cube hasn't finished
+            setRaceResult('win');
+            setRaceMode('finished');
+            // Clear queue and stop animation
+            setMoveQueue([]);
+            setCurrentMove(null);
+            setIsAnimating(false);
+          }
+        }
+      }
+    };
+
+    if (raceMode === 'ready' || raceMode === 'racing') {
+      window.addEventListener('keydown', handleKeyPress);
+      return () => window.removeEventListener('keydown', handleKeyPress);
+    }
+  }, [raceMode, moveQueue.length, currentMove, isAnimating]);
+
+  // Race mode: Check if cube finished first
+  useEffect(() => {
+    if (raceMode === 'racing' && moveQueue.length === 0 && !currentMove && !isAnimating && moveHistory.length === 0) {
+      // Cube finished resolving
+      setRaceResult('lose');
+      setRaceMode('finished');
+    }
+  }, [raceMode, moveQueue.length, currentMove, isAnimating, moveHistory.length]);
 
   // Show mobile warning
   if (windowWidth < 1368) {
@@ -160,8 +289,12 @@ export default function App() {
         onMove={handleMove}
         onResolve={handleResolve}
         onReset={handleReset}
+        onStartRace={handleStartRace}
         moveHistory={moveHistory}
-        disabled={isAnimating}
+        disabled={isAnimating || raceMode !== 'idle'}
+        raceMode={raceMode}
+        raceSequence={raceSequence}
+        raceResult={raceResult}
       />
 
     </div>
