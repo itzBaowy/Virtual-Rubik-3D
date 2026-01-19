@@ -114,7 +114,7 @@ export default function App() {
         onResolve={handleResolve}
         onReset={handleReset}
         moveHistory={moveHistory}
-        disabled={moveQueue.length > 50}
+        disabled={isAnimating}
       />
 
     </div>
