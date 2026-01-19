@@ -1,6 +1,33 @@
-# React + TypeScript + Vite
+# Virtual Rubik 3D 🎮
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive 3D Rubik's Cube simulator built with React Three Fiber and Three.js.
+
+## ✨ Features
+
+- **Interactive 3D Rubik's Cube** with realistic animations
+- **Standard notation support** (R, L, U, D, F, B with modifiers ', 2)
+- **Algorithm input** for executing move sequences
+- **Scramble function** for random 20-move scrambles
+- **Auto-resolve** to undo all moves in reverse order
+- **Queue-based animation system** for smooth sequential moves
+- **Orbit controls** for 360° viewing
+
+## 🎯 Controls
+
+### Basic Moves
+- Click buttons for individual moves (R, L, U, D, F, B)
+- Add `'` for counter-clockwise rotations (e.g., R')
+- Add `2` for 180° rotations (e.g., R2)
+
+### Algorithm Input
+- Enter move sequences like: `R U R' U'`
+- Multiple moves separated by spaces
+- Click Execute to run the algorithm
+
+### Utility Functions
+- **Scramble**: Generate random 20-move scramble
+- **Resolve**: Automatically undo all moves
+- **Reset**: Reset cube to solved state
 
 Currently, two official plugins are available:
 
@@ -71,3 +98,43 @@ export default defineConfig([
   },
 ])
 ```
+
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+## 🛠️ Tech Stack
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Three.js** - 3D graphics engine
+- **@react-three/fiber** - React renderer for Three.js
+- **@react-three/drei** - Helper components
+- **Vite** - Build tool
+
+## 📝 License
+
+MIT License
+
+## 👤 Author
+
+**itzBaowy**
+
+- GitHub: [@itzBaowy](https://github.com/itzBaowy)
+- Project: [Virtual-Rubik-3D](https://github.com/itzBaowy/Virtual-Rubik-3D)

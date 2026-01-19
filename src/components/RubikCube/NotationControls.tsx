@@ -185,6 +185,31 @@ export function NotationControls({ onMove, onResolve, onReset, moveHistory = [],
           <strong>Recent moves:</strong> {history.join(' ')}
         </div>
       )}
+
+      {/* Author credit */}
+      <div style={{ 
+        marginTop: "15px", 
+        paddingTop: "15px", 
+        borderTop: "1px solid #e0e0e0",
+        fontSize: "11px", 
+        color: "#888",
+        textAlign: "center"
+      }}>
+        Created by <a 
+          href="https://github.com/itzBaowy" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{ 
+            color: "#667eea", 
+            textDecoration: "none",
+            fontWeight: "600"
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.textDecoration = "underline"}
+          onMouseLeave={(e) => e.currentTarget.style.textDecoration = "none"}
+        >
+          @itzBaowy
+        </a>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": {
+    "name": "itzBaowy",
+    "url": "https://github.com/itzBaowy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itzBaowy/Virtual-Rubik-3D.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
