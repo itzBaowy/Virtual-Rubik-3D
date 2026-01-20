@@ -280,7 +280,7 @@ export default function App() {
           dampingFactor={0.05}
           rotateSpeed={0.5}
           minDistance={700}
-          maxDistance={2000}
+          maxDistance={1800}
           enabled={!isAnimating}
         />
       </Canvas>
